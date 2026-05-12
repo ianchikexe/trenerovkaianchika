@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Янчик Тренировки | Таймеры + Прогресс</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0d15;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #edf2fb;
+            line-height: 1.4;
+            scroll-behavior: smooth;
+        }
+
+        /* кастомный скролл */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1e2c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1.2rem;
+        }
+
+        /* хедер */
+        .hero {
+            background: linear-gradient(145deg, #0f1220 0%, #151b2c 100%);
+            padding: 1.8rem 0 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #3b82f6;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero p {
+            color: #bbd7fb;
+            margin-top: 0.3rem;
+        }
+        .badge-list {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 1rem 0 0.2rem;
+        }
+        .badge {
+            background: #1d2338;
+            border-radius: 60px;
+            padding: 0.2rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-left: 3px solid #3b82f6;
+        }
+
+        /* карточка расписания */
+        .schedule-card {
+            background: #0f1322;
+            border-radius: 32px;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #2a3048;
+        }
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .clock-live {
+            font-family: monospace;
+            font-size: 1.3rem;
+            background: #1b213a;
+            padding: 0.2rem 1rem;
+            border-radius: 60px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .schedule-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: space-between;
+        }
+        .time-block {
+            background: #141b2a;
+            border-radius: 20px;
+            padding: 0.5rem 0.8rem;
+            flex: 1;
+            min-width: 105px;
+            text-align: center;
+            border-bottom: 2px solid #3b82f6;
+            font-size: 0.85rem;
+        }
+        .time-block strong {
+            color: #60a5fa;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        /* секции */
+        section {
+            padding: 1.8rem 0 1rem;
+        }
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title span {
+            background: #3b82f6;
+            width: 45px;
+            height: 4px;
+            border-radius: 4px;
+        }
+
+        /* карточки упражнений с таймерами */
+        .workout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 1.3rem;
+            margin-top: 0.5rem;
+        }
+        .ex-card {
+            background: #10141f;
+            border-radius: 30px;
+            padding: 1rem 1.2rem;
+            border: 1px solid #2a2f48;
+            transition: 0.2s;
+        }
+        .ex-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-3px);
+        }
+        .ex-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ex-meta {
+            font-size: 0.75rem;
+            background: #1b2138;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            margin-bottom: 0.8rem;
+        }
+        .timer-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #080b12;
+            border-radius: 60px;
+            padding: 0.3rem 0.7rem;
+            margin: 0.7rem 0;
+        }
+        .timer-display {
+            font-family: 'Monaco', monospace;
+            font-size: 1.6rem;
+            font-weight: bold;
+            background: #00000066;
+            padding: 0 0.5rem;
+            border-radius: 40px;
+            color: #60a5fa;
+            letter-spacing: 2px;
+        }
+        .timer-status {
+            font-size: 0.7rem;
+            background: #252b46;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 0.3rem;
+        }
+        .timer-btn {
+            background: #3b82f6;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .timer-btn.reset {
+            background: #334155;
+        }
+        .timer-btn:hover {
+            opacity: 0.85;
+            transform: scale(0.97);
+        }
+
+        /* задания чеклист */
+        .tasks-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .task-card {
+            background: #10141f;
+            border-radius: 24px;
+            padding: 1rem;
+            flex: 1 1 200px;
+            border: 1px solid #2a2f48;
+        }
+        .task-card h4 {
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 8px;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0.5rem 0;
+            cursor: pointer;
+        }
+        .check-item input {
+            width: 18px;
+            height: 18px;
+            accent-color: #3b82f6;
+        }
+        .progress-bar {
+            background: #1d2338;
+            border-radius: 24px;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.7rem;
+            color: #6e7492;
+        }
+        @media (max-width: 650px) {
+            .hero h1 { font-size: 1.6rem; }
+            .section-title { font-size: 1.3rem; }
+            .timer-display { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="container">
+        <h1>🏋️‍♂️ ЯНЧИК · ТРЕНИРОВКИ</h1>
+        <p>2 месяца до результата. Домашние тренировки + таймеры на каждое движение.</p>
+        <div class="badge-list">
+            <div class="badge">🚫 Без мучного / щадим ЖКТ</div>
+            <div class="badge">⏱️ Таймер подхода/отдыха</div>
+            <div class="badge">📋 Задания + прогресс</div>
+        </div>
+    </div>
+</div>
+
+<main class="container">
+    <!-- РАСПИСАНИЕ ДНЯ с точным временем -->
+    <div class="schedule-card">
+        <div class="schedule-header">
+            <h3 style="color:#60a5fa;">⏰ РЕЖИМ ДНЯ (еда + тренировка)</h3>
+            <div class="clock-live" id="liveClock">--:--</div>
+        </div>
+        <div class="schedule-grid">
+            <div class="time-block"><strong>08:00</strong> Завтрак: овсянка+2 яйца+авокадо</div>
+            <div class="time-block"><strong>11:00</strong> Перекус: творог+орехи</div>
+            <div class="time-block"><strong>13:30</strong> Обед: гречка/рис+курица/индейка+овощи</div>
+            <div class="time-block"><strong>16:30</strong> Полдник: йогурт+банан</div>
+            <div class="time-block"><strong>18:00</strong> ⚡ ТРЕНИРОВКА (таймеры ниже)</div>
+            <div class="time-block"><strong>19:45</strong> Ужин: рыба/творог+кабачки</div>
+            <div class="time-block"><strong>22:30</strong> Кефир + сон</div>
+        </div>
+        <p class="progress-note" style="font-size: 0.7rem; margin-top: 10px;">🚫 Полностью исключи хлеб, макароны, выпечку. Основа: крупы, мясо, яйца, овощи. Пей 1.5-2 л воды.</p>
+    </div>
+
+    <!-- ТРЕНИРОВКИ С ТАЙМЕРАМИ (от Янчика) -->
+    <section>
+        <div class="section-title"><span></span> 🎯 УПРАЖНЕНИЯ · ВСТРОЕННЫЙ ТАЙМЕР</div>
+        <div class="workout-grid" id="exerciseGrid"></div>
+        <div class="progress-note" style="margin-top: 0.8rem; font-size:0.75rem;">💡 Для каждого упражнения: нажми СТАРТ — пойдёт отсчёт рабочего времени, затем автоматически отдых. По завершении цикла таймер остановится. Жми СБРОС, чтобы начать заново.</div>
+    </section>
+
+    <!-- ЕЖЕДНЕВНЫЕ ЗАДАНИЯ (чеки) -->
+    <section>
+        <div class="section-title"><span></span> ✅ ЧЕК-ЛИСТ НА ДЕНЬ</div>
+        <div class="tasks-grid">
+            <div class="task-card">
+                <h4>💧 ВОДА</h4>
+                <div class="check-item"><input type="checkbox" id="task_water1"> Стакан утром</div>
+                <div class="check-item"><input type="checkbox" id="task_water2"> 1.5л за день</div>
+            </div>
+            <div class="task-card">
+                <h4>🍏 ПИТАНИЕ (без мучного)</h4>
+                <div class="check-item"><input type="checkbox" id="task_meal1"> Завтрак без глютена</div>
+                <div class="check-item"><input type="checkbox" id="task_meal2"> Обед/ужин без хлеба</div>
+                <div class="check-item"><input type="checkbox" id="task_meal3"> Нет сладкого/выпечки</div>
+            </div>
+            <div class="task-card">
+                <h4>😴 ВОССТАНОВЛЕНИЕ</h4>
+                <div class="check-item"><input type="checkbox" id="task_sleep"> Сон 8 часов</div>
+                <div class="check-item"><input type="checkbox" id="task_stretch"> Растяжка 5 мин</div>
+            </div>
+            <div class="task-card">
+                <h4>🏋️ ТРЕНИРОВКА</h4>
+                <div class="check-item"><input type="checkbox" id="task_workout"> Сделал все подходы с таймером</div>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <span>🔥 Выполнено заданий: </span>
+            <span id="taskCounter">0/8</span>
+            <button id="resetTasksBtn" style="background:#334155; border:none; padding:4px 14px; border-radius:40px; color:white; cursor:pointer;">Сбросить всё</button>
+        </div>
+    </section>
+    <footer>
+        ✨ Янчик, каждый день — шаг к новому телу. Строгий режим + таймеры = результат через 2 месяца. Не пропускай!
+    </footer>
+</main>
+
+<script>
+    // ---------- УПРАЖНЕНИЯ (базовые для дома) ----------
+    const exercises = [
+        { name: "💪 Отжимания от пола", sets: "3х12-15", workSec: 40, restSec: 25 },
+        { name: "🦵 Приседания с рюкзаком", sets: "4х12", workSec: 45, restSec: 30 },
+        { name: "🔱 Тяга рюкзака к поясу", sets: "3х10", workSec: 45, restSec: 25 },
+        { name: "💎 Алмазные отжимания (трицепс)", sets: "3х8-10", workSec: 40, restSec: 20 },
+        { name: "🏃 Выпады назад с весом", sets: "3х10 на ногу", workSec: 45, restSec: 30 },
+        { name: "🧘 Планка + подъем ног", sets: "3х30 сек", workSec: 35, restSec: 20 },
+        { name: "⛰️ Болгарские выпады", sets: "3х8", workSec: 45, restSec: 25 },
+        { name: "🏔️ Плечевой жим сидя (рюкзак)", sets: "4х10", workSec: 45, restSec: 30 }
+    ];
+
+    let activeTimers = {};    // id упражнения -> interval
+    let timerValues = {};      // текущие секунды для отображения
+
+    function formatTime(sec) {
+        const mins = Math.floor(sec / 60);
+        const remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+
+    function stopTimer(exId) {
+        if (activeTimers[exId]) {
+            clearInterval(activeTimers[exId]);
+            activeTimers[exId] = null;
+        }
+    }
+
+    function startTimer(exId, workTime, restTime, displaySpan, statusSpan) {
+        if (activeTimers[exId]) stopTimer(exId);
+        let current = workTime;
+        let isWorkPhase = true;
+        timerValues[exId] = current;
+        if (displaySpan) displaySpan.innerText = formatTime(current);
+        if (statusSpan) statusSpan.innerText = "⚡ РАБОТА!";
+
+        const interval = setInterval(() => {
+            if (current <= 1) {
+                if (isWorkPhase) {
+                    // смена на отдых
+                    isWorkPhase = false;
+                    current = restTime;
+                    timerValues[exId] = current;
+                    if (displaySpan) displaySpan.innerText = formatTime(current);
+                    if (statusSpan) statusSpan.innerText = "💤 ОТДЫХ";
+                    if (navigator.vibrate) navigator.vibrate(100);
+                } else {
+                    // отдых завершен, таймер конец
+                    clearInterval(interval);
+                    activeTimers[exId] = null;
+                    if (statusSpan) statusSpan.innerText = "✅ ГОТОВО!";
+                    if (displaySpan) displaySpan.innerText = formatTime(0);
+                    return;
+                }
+            } else {
+                current--;
+                timerValues[exId] = current;
+                if (displaySpan) displaySpan.innerText = formatTime(current);
+            }
+        }, 1000);
+        activeTimers[exId] = interval;
+    }
+
+    function resetTimerForEx(exId, workTime, displaySpan, statusSpan) {
+        stopTimer(exId);
+        timerValues[exId] = workTime;
+        if (displaySpan) displaySpan.innerText = formatTime(workTime);
+        if (statusSpan) statusSpan.innerText = "▶️ ГОТОВ";
+    }
+
+    function renderExercises() {
+        const container = document.getElementById('exerciseGrid');
+        container.innerHTML = '';
+        exercises.forEach((ex, idx) => {
+            const exId = `ex_${idx}`;
+            const card = document.createElement('div');
+            card.className = 'ex-card';
+            card.innerHTML = `
+                <div class="ex-name">${ex.name}</div>
+                <div class="ex-meta">${ex.sets}</div>
+                <div class="timer-panel">
+                    <span class="timer-display" id="timer_${exId}">${formatTime(ex.workSec)}</span>
+                    <span class="timer-status" id="status_${exId}">▶️ ГОТОВ</span>
+                </div>
+                <div class="btn-group">
+                    <button class="timer-btn" data-id="${exId}" data-action="start" data-work="${ex.workSec}" data-rest="${ex.restSec}">▶ СТАРТ</button>
+                    <button class="timer-btn reset" data-id="${exId}" data-action="reset" data-work="${ex.workSec}">🔄 СБРОС</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // навесить события на кнопки
+        document.querySelectorAll('.timer-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const exId = btn.getAttribute('data-id');
+                const action = btn.getAttribute('data-action');
+                const work = parseInt(btn.getAttribute('data-work'));
+                const rest = btn.getAttribute('data-rest') ? parseInt(btn.getAttribute('data-rest')) : 25;
+                const timerSpan = document.getElementById(`timer_${exId}`);
+                const statusSpan = document.getElementById(`status_${exId}`);
+                if (action === 'start') {
+                    startTimer(exId, work, rest, timerSpan, statusSpan);
+                } else if (action === 'reset') {
+                    resetTimerForEx(exId, work, timerSpan, statusSpan);
+                }
+            });
+        });
+    }
+
+    renderExercises();
+
+    // ---------- ЧАСЫ ----------
+    function updateLiveClock() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2,'0');
+        const minutes = now.getMinutes().toString().padStart(2,'0');
+        document.getElementById('liveClock').innerText = `${hours}:${minutes}`;
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    // ---------- ЗАДАНИЯ (сохраняем в localStorage) ----------
+    const taskIds = ['task_water1', 'task_water2', 'task_meal1', 'task_meal2', 'task_meal3', 'task_sleep', 'task_stretch', 'task_workout'];
+    function updateTaskCounter() {
+        let completed = 0;
+        taskIds.forEach(id => {
+            const cb = document.getElementById(id);
+            if (cb && cb.checked) completed++;
+        });
+        document.getElementById('taskCounter').innerText = `${completed}/${taskIds.length}`;
+        // сохранить состояние
+        const state = {};
+        taskIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) state[id] = el.checked;
+        });
+        localStorage.setItem('yanchik_tasks', JSON.stringify(state));
+    }
+
+    function loadTasks() {
+        const saved = localStorage.getItem('yanchik_tasks');
+        if (saved) {
+            const state = JSON.parse(saved);
+            taskIds.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb && state[id] !== undefined) cb.checked = state[id];
+            });
+        }
+        updateTaskCounter();
+    }
+
+    taskIds.forEach(id => {
+        const cb = document.getElementById(id);
+        if (cb) cb.addEventListener('change', updateTaskCounter);
+    });
+    document.getElementById('resetTasksBtn')?.addEventListener('click', () => {
+        taskIds.forEach(id => {
+            const cb = document.getElementById(id);
+            if (cb) cb.checked = false;
+        });
+        updateTaskCounter();
+        localStorage.removeItem('yanchik_tasks');
+    });
+    loadTasks();
+
+    // доп: напоминание о питании при клике на время (необязательно, но приятно)
+    console.log("Тренировки от Янчика — таймеры активны. Без мучного, режим, сон!");
+</script>
+</body>
+</html>
