@@ -1,122 +1,965 @@
-
-Шаг 1. Установите инструменты
-Перед началом убедитесь, что у вас установлен:
-
-Visual Studio (рекомендуется последняя версия)
-.NET SDK
-Совет: Если используете Linux/MacOS, установите Visual Studio Code, это тоже отличный вариант.
-
-Шаг 2. Создаем проект
-Запустите терминал и введите команды:
-
-
-dotnet new webapp --name MyFirstSite
-cd MyFirstSite 
-dotnet run
-Проект успешно создан и запущен локально. Вы увидите стартовую страницу браузера.
-
-Шаг 3. Организация структуры файлов
-Наш проект теперь имеет стандартную структуру. Для начала давайте создадим раздел для нашего дизайна:
-
-Папка wwwroot: сюда мы будем помещать файлы HTML, CSS и JavaScript.
-Файлы HTML будут храниться отдельно, а наш движок будет отвечать за взаимодействие с ними.
-💡 Пример структуры:
-
-
-wwwroot/
-├── css/
-│   └── styles.css
-├── js/
-│   └── main.js
-└── pages/
-    └── index.html
-Шаг 4. Добавляем HTML-разметку
-Теперь давайте напишем простую HTML-страницу, которую хотим видеть на сайте. Открываем wwwroot/pages/index.html и добавляем следующий код:
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мой первый сайт</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Янчик Тренировки 2.0 | 2 часа + звук + питание</title>
+    <style>
+        :root {
+            --bg: #06080f;
+            --card: #0d1120;
+            --card2: #111627;
+            --accent: #3b82f6;
+            --accent2: #60a5fa;
+            --green: #22c55e;
+            --warn: #f59e0b;
+            --red: #ef4444;
+            --text: #e8edf5;
+            --muted: #94a3b8;
+            --border: #1e2a40;
+            --radius: 22px;
+            --radius-sm: 12px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0d18;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* ХЕДЕР */
+        .hero {
+            background: linear-gradient(160deg, #0b0f1e 0%, #11192f 60%, #0f1425 100%);
+            padding: 2rem 0 1.6rem;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-size: 2.3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #93c5fd, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero p {
+            color: #b0c8f0;
+            margin-top: 0.4rem;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+        .badge-list {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 1rem 0 0;
+            position: relative;
+            z-index: 1;
+        }
+        .badge {
+            background: #151e33;
+            border-radius: 50px;
+            padding: 0.35rem 1.1rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            border-left: 3px solid var(--accent);
+            letter-spacing: 0.3px;
+        }
+
+        /* КАРТОЧКИ */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.4rem;
+            border: 1px solid var(--border);
+            margin: 1.2rem 0;
+            box-shadow: var(--shadow);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 0.8rem;
+        }
+        .live-clock {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            font-size: 1.4rem;
+            background: #10192b;
+            padding: 0.25rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            color: var(--accent2);
+            letter-spacing: 1px;
+            border: 1px solid #263355;
+        }
+        .schedule-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
+        .time-block {
+            background: #11182a;
+            border-radius: 16px;
+            padding: 0.55rem 0.9rem;
+            flex: 1 1 115px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            font-size: 0.78rem;
+            min-width: 100px;
+            transition: 0.2s;
+        }
+        .time-block:hover {
+            background: #182032;
+            border-bottom-color: var(--accent2);
+            transform: translateY(-2px);
+        }
+        .time-block strong {
+            color: var(--accent2);
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+        .time-block.highlight {
+            border-bottom-color: var(--green);
+            background: #0d1a12;
+        }
+        .time-block.highlight strong {
+            color: var(--green);
+        }
+
+        /* СЕКЦИИ */
+        section {
+            padding: 1.2rem 0 0.8rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title .bar {
+            display: inline-block;
+            width: 40px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin: 1rem 0 0.5rem;
+            padding-left: 0.3rem;
+            border-left: 3px solid var(--accent);
+            padding: 0.15rem 0.6rem;
+        }
+
+        /* СЕТКА УПРАЖНЕНИЙ */
+        .workout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .ex-card {
+            background: var(--card2);
+            border-radius: var(--radius);
+            padding: 1rem 1.1rem;
+            border: 1px solid var(--border);
+            transition: 0.25s;
+            position: relative;
+        }
+        .ex-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
+        }
+        .ex-card.completed {
+            border-color: var(--green) !important;
+            background: #0a1a10 !important;
+        }
+        .ex-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+        }
+        .ex-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ex-sets {
+            font-size: 0.7rem;
+            background: #1a2640;
+            padding: 0.18rem 0.7rem;
+            border-radius: 30px;
+            white-space: nowrap;
+            color: #b0cbf0;
+            font-weight: 600;
+        }
+        .timer-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #060910;
+            border-radius: 50px;
+            padding: 0.35rem 0.8rem;
+            margin: 0.6rem 0;
+            gap: 0.5rem;
+        }
+        .timer-display {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent2);
+            letter-spacing: 2px;
+            min-width: 70px;
+            text-align: center;
+            transition: color 0.3s;
+        }
+        .timer-display.urgent {
+            color: var(--warn);
+            animation: pulse 0.6s ease-in-out;
+        }
+        .timer-status {
+            font-size: 0.68rem;
+            background: #1b2540;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-align: center;
+            min-width: 70px;
+            transition: 0.3s;
+        }
+        .timer-status.active {
+            background: #1a3a1a;
+            color: #4ade80;
+        }
+        .timer-status.rest {
+            background: #3a2a0a;
+            color: #fbbf24;
+        }
+        .timer-status.done {
+            background: #0a2a1a;
+            color: #22c55e;
+        }
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 7px 18px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.78rem;
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .btn-start {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-start:hover {
+            background: #2563eb;
+            transform: scale(0.96);
+        }
+        .btn-reset {
+            background: #334155;
+            color: #e2e8f0;
+        }
+        .btn-reset:hover {
+            background: #475569;
+            transform: scale(0.96);
+        }
+        .btn-sound {
+            background: #1e293b;
+            color: #fbbf24;
+            font-size: 0.7rem;
+            padding: 6px 12px;
+        }
+        .btn-sound:hover {
+            background: #2d3a4f;
+        }
+        .sound-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            margin-right: 4px;
+            animation: glow-dot 1.5s infinite;
+        }
+        @keyframes glow-dot {
+            0%,
+            100% {
+                box-shadow: 0 0 4px var(--green);
+            }
+            50% {
+                box-shadow: 0 0 12px var(--green), 0 0 20px var(--green);
+            }
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        /* ЧЕКЛИСТ */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 0.9rem;
+            margin: 0.8rem 0;
+        }
+        .task-card {
+            background: var(--card2);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            border: 1px solid var(--border);
+        }
+        .task-card h4 {
+            color: var(--accent2);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0.4rem 0;
+            cursor: pointer;
+            font-size: 0.82rem;
+            padding: 3px 0;
+            transition: 0.2s;
+        }
+        .check-item:hover {
+            color: #fff;
+        }
+        .check-item input {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .progress-bar {
+            background: #131b2e;
+            border-radius: 40px;
+            padding: 0.6rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.6rem;
+            border: 1px solid var(--border);
+        }
+        .progress-fill {
+            height: 6px;
+            background: var(--accent);
+            border-radius: 6px;
+            transition: width 0.4s;
+        }
+        .progress-wrap {
+            flex: 1;
+            min-width: 120px;
+            background: #060910;
+            border-radius: 6px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            font-size: 0.7rem;
+            color: #6b7394;
+            border-top: 1px solid #1a2240;
+            margin-top: 1rem;
+        }
+        .note {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.8rem;
+            background: #0d1222;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 650px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.2rem;
+            }
+            .timer-display {
+                font-size: 1.3rem;
+                min-width: 55px;
+            }
+            .workout-grid {
+                grid-template-columns: 1fr;
+            }
+            .tasks-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .btn {
+                padding: 6px 14px;
+                font-size: 0.7rem;
+            }
+            .schedule-grid {
+                gap: 0.4rem;
+            }
+            .time-block {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.5rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .tasks-grid {
+                grid-template-columns: 1fr;
+            }
+            .badge-list {
+                gap: 5px;
+            }
+            .badge {
+                font-size: 0.65rem;
+                padding: 0.25rem 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Добро пожаловать на мой сайт!</h1>
-    </header>
-    <main>
-        <section id="content">
-            <p>Здесь будет основное содержание моего сайта.</p>
+
+    <!-- ХЕДЕР -->
+    <div class="hero">
+        <div class="container">
+            <h1>🏋️‍♂️ ЯНЧИК · ТРЕНИРОВКИ 2.0</h1>
+            <p>2 месяца до результата. 2-часовая тренировка + таймеры со звуком + строгое питание.</p>
+            <div class="badge-list">
+                <div class="badge">🔊 Звук в конце подхода</div>
+                <div class="badge">⏱️ 2 часа тренировок</div>
+                <div class="badge">🚫 Без мучного / сахара</div>
+                <div class="badge">📋 Задания + прогресс</div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- ⏰ РАСПИСАНИЕ ДНЯ -->
+        <div class="card">
+            <div class="card-header">
+                <h3 style="color:var(--accent2);">⏰ РЕЖИМ ДНЯ (тренировка 2 часа)</h3>
+                <div class="live-clock" id="liveClock">--:--</div>
+            </div>
+            <div class="schedule-grid">
+                <div class="time-block"><strong>07:30</strong> Подъём + вода</div>
+                <div class="time-block"><strong>08:00</strong> Завтрак: овсянка + 3 яйца + авокадо</div>
+                <div class="time-block"><strong>11:00</strong> Перекус: творог + орехи + ягоды</div>
+                <div class="time-block"><strong>13:30</strong> Обед: гречка/рис + курица/индейка + овощи</div>
+                <div class="time-block"><strong>16:30</strong> Полдник: йогурт + банан + протеин</div>
+                <div class="time-block highlight"><strong>17:00–19:00</strong> ⚡ ТРЕНИРОВКА 2 ЧАСА</div>
+                <div class="time-block"><strong>19:30</strong> Ужин: рыба/творог + кабачки/брокколи</div>
+                <div class="time-block"><strong>22:30</strong> Кефир + магний + сон</div>
+            </div>
+            <p class="note">
+                🚫 <b>Полностью исключи:</b> хлеб, макароны, выпечку, сахар, сладкие напитки, фастфуд.<br>
+                ✅ <b>Основа рациона:</b> крупы (гречка, овсянка, рис), мясо (курица, индейка, рыба), яйца, творог, овощи, орехи.<br>
+                💧 <b>Вода:</b> 2 литра в день. ⏰ <b>Сон:</b> 8 часов минимум. 🔥 <b>Тренировка:</b> 6 дней в неделю, 1 день отдых.
+            </p>
+        </div>
+
+        <!-- 🍏 РАСШИРЕННОЕ ПИТАНИЕ -->
+        <section>
+            <div class="section-title"><span class="bar"></span> 🍏 ПЛАН ПИТАНИЯ (без глютена / без сахара)</div>
+            <div class="tasks-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                <div class="task-card">
+                    <h4>🌅 ЗАВТРАК (8:00)</h4>
+                    <p style="font-size:0.78rem;color:#bbb;">Овсянка на воде/молоке (80г) + 3 яйца + половинка авокадо. Альтернатива: гречневые хлопья + омлет.</p>
+                </div>
+                <div class="task-card">
+                    <h4>🕐 ПЕРЕКУС (11:00)</h4>
+                    <p style="font-size:0.78rem;color:#bbb;">Творог 150г + грецкие орехи 20г + горсть ягод (черника/клубника).</p>
+                </div>
+                <div class="task-card">
+                    <h4>🍗 ОБЕД (13:30)</h4>
+                    <p style="font-size:0.78rem;color:#bbb;">Гречка/рис басмати 100г + куриная грудка/индейка 150г + салат (помидоры, огурцы, масло).</p>
+                </div>
+                <div class="task-card">
+                    <h4>🥤 ПОЛДНИК (16:30)</h4>
+                    <p style="font-size:0.78rem;color:#bbb;">Греческий йогурт + банан + протеин (опционально).</p>
+                </div>
+                <div class="task-card">
+                    <h4>🐟 УЖИН (19:30)</h4>
+                    <p style="font-size:0.78rem;color:#bbb;">Рыба (форель/минтай/тунец) 150г + запечённые кабачки/брокколи + творог 100г.</p>
+                </div>
+                <div class="task-card">
+                    <h4>🌙 ПЕРЕД СНОМ (22:30)</h4>
+                    <p style="font-size:0.78rem;color:#bbb;">Стакан кефира + магний. Никаких углеводов — только белок для восстановления.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔥 ТРЕНИРОВКА 2 ЧАСА -->
+        <section>
+            <div class="section-title"><span class="bar"></span> 🔥 ТРЕНИРОВКА (2 ЧАСА · 6 ДНЕЙ В НЕДЕЛЮ)</div>
+
+            <!-- Часть 1: Разминка -->
+            <div class="subsection-title">🧘 ЧАСТЬ 1 · РАЗМИНКА (10–15 мин)</div>
+            <div class="workout-grid" id="warmupGrid"></div>
+
+            <!-- Часть 2: Основной блок -->
+            <div class="subsection-title">💪 ЧАСТЬ 2 · ОСНОВНАЯ РАБОТА (80–90 мин)</div>
+            <div class="workout-grid" id="mainWorkoutGrid"></div>
+
+            <!-- Часть 3: Заминка -->
+            <div class="subsection-title">🧊 ЧАСТЬ 3 · ЗАМИНКА + РАСТЯЖКА (10–15 мин)</div>
+            <div class="workout-grid" id="cooldownGrid"></div>
+
+            <div class="note" style="margin-top:1rem;">
+                🔊 <b>Звуковой сигнал:</b> по окончании рабочего времени и отдыха подаётся звук. Громкость зависит от устройства.
+                Нажмите кнопку 🔊 для теста звука. Таймер автоматически переключается с работы на отдых и обратно.
+                После завершения полного цикла (работа → отдых) упражнение считается выполненным.
+            </div>
+        </section>
+
+        <!-- 📋 ЧЕК-ЛИСТ -->
+        <section>
+            <div class="section-title"><span class="bar"></span> ✅ ЧЕК-ЛИСТ НА ДЕНЬ</div>
+            <div class="tasks-grid">
+                <div class="task-card">
+                    <h4>💧 ВОДА</h4>
+                    <div class="check-item"><input type="checkbox" id="task_water1"> Стакан воды утром</div>
+                    <div class="check-item"><input type="checkbox" id="task_water2"> 2 литра за день</div>
+                </div>
+                <div class="task-card">
+                    <h4>🍏 ПИТАНИЕ</h4>
+                    <div class="check-item"><input type="checkbox" id="task_meal1"> Завтрак без глютена</div>
+                    <div class="check-item"><input type="checkbox" id="task_meal2"> Обед/ужин без хлеба</div>
+                    <div class="check-item"><input type="checkbox" id="task_meal3"> Нет сладкого/выпечки</div>
+                </div>
+                <div class="task-card">
+                    <h4>😴 ВОССТАНОВЛЕНИЕ</h4>
+                    <div class="check-item"><input type="checkbox" id="task_sleep"> Сон 8 часов</div>
+                    <div class="check-item"><input type="checkbox" id="task_stretch"> Растяжка 5 мин</div>
+                </div>
+                <div class="task-card">
+                    <h4>🏋️ ТРЕНИРОВКА</h4>
+                    <div class="check-item"><input type="checkbox" id="task_workout"> Сделал все подходы с таймером</div>
+                    <div class="check-item"><input type="checkbox" id="task_2hours"> Тренировка 2 часа</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <span>🔥 Прогресс заданий:</span>
+                <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
+                <span id="taskCounter">0/9</span>
+                <button id="resetTasksBtn" class="btn btn-reset" style="font-size:0.7rem;">Сбросить всё</button>
+            </div>
         </section>
     </main>
+
     <footer>
-        <p>© 2025 Мой сайт</p>
+        ✨ <b>Янчик, каждый день — шаг к новому телу.</b> Строгий режим + 2-часовые тренировки + таймеры со звуком = результат через 2 месяца. Не пропускай ни дня!
     </footer>
-    <script src="/js/main.js"></script>
-</body>
-</html>
 
-Шаг 5. Настраиваем маршруты и контроллеры
-Чтобы наша страница была доступна пользователям, нам нужен контроллер и действие, которое вернет нашу HTML-страницу.
+    <script>
+        // ==================== ЗВУКОВАЯ СИСТЕМА ====================
+        let audioCtx = null;
 
-Создаем простой контроллер:
-
-
-using Microsoft.AspNetCore.Mvc;
-
-namespace MyFirstSite.Controllers
-{
-    public class HomeController : Controller
-    {
-        // Действие, возвращающее главную страницу
-        public IActionResult Index()
-        {
-            return View(); // Возвращает view 'Index'
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
         }
-    }
-}
-А в папке Views создается соответствующее представление (view):
 
+        function playBeep(freq = 800, duration = 0.25, type = 'square', vol = 0.3) {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                osc.frequency.exponentialRampToValueAtTime(freq * 0.4, now + duration);
+                gain.gain.setValueAtTime(vol, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + duration);
+            } catch (e) {
+                console.log('Звук недоступен:', e);
+            }
+        }
 
-@model dynamic
+        function playWorkEndSound() {
+            playBeep(900, 0.3, 'square', 0.35);
+            setTimeout(() => playBeep(700, 0.2, 'triangle', 0.25), 200);
+        }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Главная страница</title>
-    @* Подключаем стили *@
-    <link rel="stylesheet" href="~/css/styles.css"/>
-</head>
-<body>
-    <div>
-        <h1>Привет, друзья!</h1>
-        <p>Это моя первая страница на C# + HTML.</p>
-    </div>
+        function playRestEndSound() {
+            playBeep(500, 0.35, 'triangle', 0.3);
+            setTimeout(() => playBeep(650, 0.25, 'square', 0.2), 250);
+        }
+
+        function playCompleteSound() {
+            playBeep(1000, 0.15, 'square', 0.4);
+            setTimeout(() => playBeep(1200, 0.15, 'square', 0.35), 150);
+            setTimeout(() => playBeep(1400, 0.2, 'triangle', 0.3), 300);
+        }
+
+        function testSound() {
+            playBeep(600, 0.3, 'triangle', 0.4);
+            setTimeout(() => playBeep(900, 0.25, 'square', 0.35), 250);
+            setTimeout(() => playBeep(1100, 0.2, 'triangle', 0.3), 450);
+        }
+
+        // ==================== ДАННЫЕ УПРАЖНЕНИЙ ====================
+        // Разминка
+        const warmupExercises = [
+            { name: "🔄 Суставная разминка", sets: "5 мин", workSec: 50, restSec: 10, icon: "🦴" },
+            { name: "🏃 Бег на месте / скакалка", sets: "3 мин", workSec: 55, restSec: 5, icon: "🦶" },
+            { name: "🤸 Динамическая растяжка", sets: "4 мин", workSec: 55, restSec: 5, icon: "🧘" },
+            { name: "💪 Отжимания разминочные", sets: "2х15", workSec: 40, restSec: 15, icon: "🔥" },
+        ];
+
+        // Основной блок
+        const mainExercises = [
+            { name: "💪 Отжимания от пола", sets: "4х15-20", workSec: 45, restSec: 25, icon: "📐" },
+            { name: "🦵 Приседания с рюкзаком", sets: "4х15", workSec: 50, restSec: 30, icon: "🏋️" },
+            { name: "🔱 Тяга рюкзака к поясу", sets: "4х12", workSec: 50, restSec: 25, icon: "🎒" },
+            { name: "💎 Алмазные отжимания", sets: "3х10-12", workSec: 40, restSec: 20, icon: "💠" },
+            { name: "🏃 Выпады назад с весом", sets: "4х10 на ногу", workSec: 50, restSec: 30, icon: "🦿" },
+            { name: "🧘 Планка + подъём ног", sets: "4х35 сек", workSec: 40, restSec: 20, icon: "⏱️" },
+            { name: "⛰️ Болгарские выпады", sets: "4х10", workSec: 50, restSec: 30, icon: "🏔️" },
+            { name: "🏔️ Плечевой жим (рюкзак)", sets: "4х12", workSec: 45, restSec: 25, icon: "🎽" },
+            { name: "🦵 Ягодичный мост с весом", sets: "3х15", workSec: 45, restSec: 20, icon: "🌉" },
+            { name: "💪 Отжимания узким хватом", sets: "3х12", workSec: 40, restSec: 20, icon: "🤏" },
+            { name: "🔄 Скручивания на пресс", sets: "4х20", workSec: 50, restSec: 20, icon: "🌀" },
+            { name: "🏋️ Становая с рюкзаком", sets: "4х12", workSec: 50, restSec: 30, icon: "🔩" },
+        ];
+
+        // Заминка
+        const cooldownExercises = [
+            { name: "🧘 Растяжка груди и плеч", sets: "2 мин", workSec: 60, restSec: 5, icon: "🙆" },
+            { name: "🦵 Растяжка ног", sets: "3 мин", workSec: 60, restSec: 5, icon: "🧎" },
+            { name: "🌬️ Дыхательная гимнастика", sets: "2 мин", workSec: 60, restSec: 5, icon: "😮‍💨" },
+            { name: "🧊 Полное расслабление", sets: "3 мин", workSec: 60, restSec: 5, icon: "💆" },
+        ];
+
+        // ==================== УПРАВЛЕНИЕ ТАЙМЕРАМИ ====================
+        let activeTimers = {};
+        let completedExercises = new Set();
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function stopTimer(exId) {
+            if (activeTimers[exId]) {
+                clearInterval(activeTimers[exId]);
+                activeTimers[exId] = null;
+            }
+        }
+
+        function startTimerCycle(exId, workTime, restTime, displaySpan, statusSpan, cardEl) {
+            // Останавливаем предыдущий таймер если есть
+            stopTimer(exId);
+            completedExercises.delete(exId);
+            if (cardEl) cardEl.classList.remove('completed');
+
+            let current = workTime;
+            let isWorkPhase = true;
+            if (displaySpan) {
+                displaySpan.innerText = formatTime(current);
+                displaySpan.classList.remove('urgent');
+            }
+            if (statusSpan) {
+                statusSpan.innerText = '⚡ РАБОТА!';
+                statusSpan.className = 'timer-status active';
+            }
+
+            const interval = setInterval(() => {
+                if (current <= 1) {
+                    if (isWorkPhase) {
+                        // Работа закончена → звук → переходим на отдых
+                        playWorkEndSound();
+                        isWorkPhase = false;
+                        current = restTime;
+                        if (displaySpan) {
+                            displaySpan.innerText = formatTime(current);
+                            displaySpan.classList.remove('urgent');
+                        }
+                        if (statusSpan) {
+                            statusSpan.innerText = '💤 ОТДЫХ';
+                            statusSpan.className = 'timer-status rest';
+                        }
+                        if (navigator.vibrate) navigator.vibrate(80);
+                    } else {
+                        // Отдых закончен → звук → цикл завершён
+                        playRestEndSound();
+                        clearInterval(interval);
+                        activeTimers[exId] = null;
+                        if (statusSpan) {
+                            statusSpan.innerText = '✅ ГОТОВО!';
+                            statusSpan.className = 'timer-status done';
+                        }
+                        if (displaySpan) {
+                            displaySpan.innerText = formatTime(0);
+                            displaySpan.classList.remove('urgent');
+                        }
+                        completedExercises.add(exId);
+                        if (cardEl) cardEl.classList.add('completed');
+                        playCompleteSound();
+                        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                        return;
+                    }
+                } else {
+                    current--;
+                    if (displaySpan) {
+                        displaySpan.innerText = formatTime(current);
+                        // Подсветка когда осталось мало времени
+                        if (current <= 5) {
+                            displaySpan.classList.add('urgent');
+                        } else {
+                            displaySpan.classList.remove('urgent');
+                        }
+                    }
+                }
+            }, 1000);
+            activeTimers[exId] = interval;
+        }
+
+        function resetTimerForEx(exId, workTime, displaySpan, statusSpan, cardEl) {
+            stopTimer(exId);
+            completedExercises.delete(exId);
+            if (cardEl) cardEl.classList.remove('completed');
+            if (displaySpan) {
+                displaySpan.innerText = formatTime(workTime);
+                displaySpan.classList.remove('urgent');
+            }
+            if (statusSpan) {
+                statusSpan.innerText = '▶️ ГОТОВ';
+                statusSpan.className = 'timer-status';
+            }
+        }
+
+        function createExerciseCard(ex, exId, prefix) {
+            const card = document.createElement('div');
+            card.className = 'ex-card';
+            card.id = `card_${exId}`;
+            card.innerHTML = `
+            <div class="ex-header">
+              <span class="ex-name">${ex.icon || ''} ${ex.name}</span>
+              <span class="ex-sets">${ex.sets}</span>
+            </div>
+            <div class="timer-panel">
+              <span class="timer-display" id="timer_${exId}">${formatTime(ex.workSec)}</span>
+              <span class="timer-status" id="status_${exId}">▶️ ГОТОВ</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-start" data-id="${exId}" data-action="start" data-work="${ex.workSec}" data-rest="${ex.restSec}">▶ СТАРТ</button>
+              <button class="btn btn-reset" data-id="${exId}" data-action="reset" data-work="${ex.workSec}">🔄 СБРОС</button>
+              <button class="btn btn-sound" data-id="${exId}" data-action="testsound" title="Тест звука">🔊</button>
+            </div>
+          `;
+            return card;
+        }
+
+        function renderExerciseGrid(containerId, exercises, prefix) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            exercises.forEach((ex, idx) => {
+                const exId = `${prefix}_${idx}`;
+                const card = createExerciseCard(ex, exId, prefix);
+                container.appendChild(card);
+            });
+            // Навешиваем события
+            container.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const exId = btn.getAttribute('data-id');
+                    const action = btn.getAttribute('data-action');
+                    const work = parseInt(btn.getAttribute('data-work'));
+                    const rest = btn.getAttribute('data-rest') ? parseInt(btn.getAttribute(
+                        'data-rest')) : 20;
+                    const timerSpan = document.getElementById(`timer_${exId}`);
+                    const statusSpan = document.getElementById(`status_${exId}`);
+                    const cardEl = document.getElementById(`card_${exId}`);
+                    if (action === 'start') {
+                        startTimerCycle(exId, work, rest, timerSpan, statusSpan, cardEl);
+                    } else if (action === 'reset') {
+                        resetTimerForEx(exId, work, timerSpan, statusSpan, cardEl);
+                    } else if (action === 'testsound') {
+                        testSound();
+                        // Визуальная обратная связь
+                        if (statusSpan) {
+                            const orig = statusSpan.innerText;
+                            statusSpan.innerText = '🔊 ЗВУК';
+                            statusSpan.className = 'timer-status active';
+                            setTimeout(() => {
+                                statusSpan.innerText = orig;
+                                statusSpan.className = 'timer-status';
+                            }, 600);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Рендерим все три секции
+        renderExerciseGrid('warmupGrid', warmupExercises, 'warm');
+        renderExerciseGrid('mainWorkoutGrid', mainExercises, 'main');
+        renderExerciseGrid('cooldownGrid', cooldownExercises, 'cool');
+
+        // ==================== ЧАСЫ ====================
+        function updateLiveClock() {
+            const now = new Date();
+            document.getElementById('liveClock').innerText =
+                `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        }
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        // ==================== ЧЕК-ЛИСТ ====================
+        const taskIds = [
+            'task_water1', 'task_water2',
+            'task_meal1', 'task_meal2', 'task_meal3',
+            'task_sleep', 'task_stretch',
+            'task_workout', 'task_2hours'
+        ];
+
+        function updateTaskCounter() {
+            let completed = 0;
+            taskIds.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb && cb.checked) completed++;
+            });
+            const total = taskIds.length;
+            document.getElementById('taskCounter').innerText = `${completed}/${total}`;
+            const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const fill = document.getElementById('progressFill');
+            if (fill) fill.style.width = pct + '%';
+            // Сохраняем
+            const state = {};
+            taskIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) state[id] = el.checked;
+            });
+            localStorage.setItem('yanchik_tasks_v2', JSON.stringify(state));
+        }
+
+        function loadTasks() {
+            const saved = localStorage.getItem('yanchik_tasks_v2');
+            if (saved) {
+                try {
+                    const state = JSON.parse(saved);
+                    taskIds.forEach(id => {
+                        const cb = document.getElementById(id);
+                        if (cb && state[id] !== undefined) cb.checked = state[id];
+                    });
+                } catch (e) {}
+            }
+            updateTaskCounter();
+        }
+
+        taskIds.forEach(id => {
+            const cb = document.getElementById(id);
+            if (cb) cb.addEventListener('change', updateTaskCounter);
+        });
+
+        document.getElementById('resetTasksBtn')?.addEventListener('click', () => {
+            taskIds.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb) cb.checked = false;
+            });
+            updateTaskCounter();
+            localStorage.removeItem('yanchik_tasks_v2');
+        });
+
+        loadTasks();
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ АУДИО ====================
+        // Разблокируем аудиоконтекст при первом клике пользователя
+        document.addEventListener('click', () => {
+            try { getAudioContext(); } catch (e) {}
+        }, { once: true });
+
+        console.log('🏋️ Янчик Тренировки 2.0 готов: 2 часа, звук, питание!');
+        console.log('   Разминка:', warmupExercises.length, 'упр. | Основа:', mainExercises.length, 'упр. | Заминка:',
+            cooldownExercises.length, 'упр.');
+        console.log('   🔊 Звук активен — нажми на любую кнопку для инициализации аудио.');
+    </script>
 </body>
 </html>
-Шаг 6. Применение стилей и JavaScript
-Подключим стиль и скрипт, которые мы создали ранее:
-
-styles.css:
-
-body {
-    background-color: #fafafa;
-    font-family: Arial, sans-serif;
-}
-
-header h1 {
-    color: #ff6b6b;
-}
-main.js:
-
-console.log("Hello from JavaScript!");
-Эти файлы автоматически включатся благодаря ссылке <link> и <script> в нашем HTML-шаблоне.
-
-Шаг 7. Тестируем приложение
-Перезапускаем наше приложение командой:
-
-
-dotnet run
-Заходим в браузер по адресу http://localhost:5000/Home/Index и видим готовую страницу с нашим дизайном и стилем.
