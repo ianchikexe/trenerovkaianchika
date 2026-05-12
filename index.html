@@ -1,1 +1,122 @@
 
+Шаг 1. Установите инструменты
+Перед началом убедитесь, что у вас установлен:
+
+Visual Studio (рекомендуется последняя версия)
+.NET SDK
+Совет: Если используете Linux/MacOS, установите Visual Studio Code, это тоже отличный вариант.
+
+Шаг 2. Создаем проект
+Запустите терминал и введите команды:
+
+
+dotnet new webapp --name MyFirstSite
+cd MyFirstSite 
+dotnet run
+Проект успешно создан и запущен локально. Вы увидите стартовую страницу браузера.
+
+Шаг 3. Организация структуры файлов
+Наш проект теперь имеет стандартную структуру. Для начала давайте создадим раздел для нашего дизайна:
+
+Папка wwwroot: сюда мы будем помещать файлы HTML, CSS и JavaScript.
+Файлы HTML будут храниться отдельно, а наш движок будет отвечать за взаимодействие с ними.
+💡 Пример структуры:
+
+
+wwwroot/
+├── css/
+│   └── styles.css
+├── js/
+│   └── main.js
+└── pages/
+    └── index.html
+Шаг 4. Добавляем HTML-разметку
+Теперь давайте напишем простую HTML-страницу, которую хотим видеть на сайте. Открываем wwwroot/pages/index.html и добавляем следующий код:
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой первый сайт</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Добро пожаловать на мой сайт!</h1>
+    </header>
+    <main>
+        <section id="content">
+            <p>Здесь будет основное содержание моего сайта.</p>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Мой сайт</p>
+    </footer>
+    <script src="/js/main.js"></script>
+</body>
+</html>
+
+Шаг 5. Настраиваем маршруты и контроллеры
+Чтобы наша страница была доступна пользователям, нам нужен контроллер и действие, которое вернет нашу HTML-страницу.
+
+Создаем простой контроллер:
+
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace MyFirstSite.Controllers
+{
+    public class HomeController : Controller
+    {
+        // Действие, возвращающее главную страницу
+        public IActionResult Index()
+        {
+            return View(); // Возвращает view 'Index'
+        }
+    }
+}
+А в папке Views создается соответствующее представление (view):
+
+
+@model dynamic
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    @* Подключаем стили *@
+    <link rel="stylesheet" href="~/css/styles.css"/>
+</head>
+<body>
+    <div>
+        <h1>Привет, друзья!</h1>
+        <p>Это моя первая страница на C# + HTML.</p>
+    </div>
+</body>
+</html>
+Шаг 6. Применение стилей и JavaScript
+Подключим стиль и скрипт, которые мы создали ранее:
+
+styles.css:
+
+body {
+    background-color: #fafafa;
+    font-family: Arial, sans-serif;
+}
+
+header h1 {
+    color: #ff6b6b;
+}
+main.js:
+
+console.log("Hello from JavaScript!");
+Эти файлы автоматически включатся благодаря ссылке <link> и <script> в нашем HTML-шаблоне.
+
+Шаг 7. Тестируем приложение
+Перезапускаем наше приложение командой:
+
+
+dotnet run
+Заходим в браузер по адресу http://localhost:5000/Home/Index и видим готовую страницу с нашим дизайном и стилем.
